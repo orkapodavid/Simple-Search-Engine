@@ -11,7 +11,6 @@
 if(request.getParameter("keywords")!=null)
 {
 	
-	out.println("The results are:<hr/>");
 	String allString = request.getParameter("keywords");
 	char spaceChar = ' ';
 	char quoteChar = '\"';
@@ -46,22 +45,61 @@ if(request.getParameter("keywords")!=null)
 	if(i > startIndex){
 		wordVec.add(new String(allString.substring(startIndex, i)));
 	}
-	out.println(wordVec);
 	if(wordVec.size() == 0 ){
-		out.println("Please input keyword(s) to search");
-	}
-	// use Searcher to compute the result
-	Searcher searchEngine = new Searcher();
-	Vector<Page> resultPageVec = searchEngine.search(wordVec);
-	if(resultPageVec.size() > 0){
-		out.println("<table>");
-		for(i = 0; i < resultPageVec.size(); i++){
-			Page currPage = resultPageVec.elementAt(i);
-			out.println("<tr><td valign=\"top\">"+currPage.getScore()+"</td>");
-		}
+		out.println("Please input keyword(s) to search.");
 	}else{
-		out.println("No document matches your search.");
+		out.println("The results of "+ wordVec +" are:<hr/>");
+		// use Searcher to compute the result
+		Searcher searchEngine = new Searcher();
+		Vector<Page> resultPageVec = searchEngine.search(wordVec);
+		if(resultPageVec != null){
+			if(resultPageVec.size() > 0){
+				out.println("<table cellspacing=\"50px\">");
+				for(i = 0; i < resultPageVec.size(); i++){
+					Page currPage = resultPageVec.elementAt(i);
+					out.println("<tr><td valign=\"top\" >"+currPage.getScore()+"</td>");
+					out.println("<td>");
+					out.println("<a href=\""+currPage.getUrl()+"\"> "+currPage.getPageTitle()+"</a><br/>");
+					out.println("<a href=\""+currPage.getUrl()+"\"> "+currPage.getUrl()+"</a><br/>");
+					out.println(currPage.getLastUpdateTime()+", "+currPage.getPageSize()+"<br/>");
+					// Displays up to 5 most frequent stemmed keywords 
+					Vector<WordWithFrequency> matchVec = currPage.getTopFiveWord();
+					for(int j = 0; j<matchVec.size() ; ++j){
+						out.print(matchVec.elementAt(j).getWord()+" "+matchVec.elementAt(j).getFrequency()+"; ");
+					}
+					out.println("<br/>");
+					// Parent link
+					out.println( "<font color=\"red\">"+ "Parent Link:"+"</font><br/>");
+					Vector<String> parentLinkVec = currPage.getParentLink();
+					for(int j = 0; j< parentLinkVec.size(); ++j){
+						out.println(parentLinkVec.elementAt(j)+"<br/>");
+					}
+					
+					// Child link 
+					out.println("<font color=\"red\">"+"Child Link:"+"</font><br/>");
+					Vector<String> childLinkVec = currPage.getChildrenLink();
+					for(int j = 0; j< childLinkVec.size(); ++j){
+		                out.println(childLinkVec.elementAt(j)+"<br/>");
+		            }
+					out.println("<br/></td></tr>");
+					if(i == 50){
+						// up to 50 web pages
+						break;
+					}
+				}
+				out.println("</table>");
+			}else{
+				out.println("No document matches your search.");
+			}
+		}else{
+			out.println("No document is available.");
+			out.println("<p>Path of database: "+ searchEngine.getDebugMsg() +"</p>");
+			out.println("<p>Path of stopwords.txt: "+ searchEngine.getDebugMsg2() + "</p>");
+		}
+		
+		searchEngine.close();
 	}
+	
 }
 
 

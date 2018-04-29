@@ -1,13 +1,10 @@
 package searchingRelated;
 import IRUtilities.*;
+
 import java.io.*;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
+
+import jdbm.RecordManagerFactory;
 
 public class StopStem
 {
@@ -27,7 +24,10 @@ public class StopStem
 		if(!file.canRead()){
 			System.out.println("!file.canRead()");
 			//file = new File("/comp4321-testing1.0/WEB-INF/lib/stopwords.txt");
-			file = new File("/home/orbo/Desktop/COMP4321-Project/apache-tomcat-7.0.86/wtpwebapps/comp4321-testing1.0/WEB-INF/classes/searchingRelated/stopwords.txt");
+			//file = new File("/home/orbo/Desktop/COMP4321-Project/apache-tomcat-7.0.86/wtpwebapps/comp4321-testing1.0/WEB-INF/classes/searchingRelated/stopwords.txt");
+			//file = new File(System.getProperty("catalina.home")+"/webapps/comp4321-testing1.0/WEB-INF/lib/stopwords.txt");
+			file = new File("/home/orbo/Desktop/COMP4321-Project/apache-tomcat-7.0.86/webapps/comp4321-testing1.0/WEB-INF/lib/stopwords.txt");
+			System.out.println(file.getAbsolutePath());
 		}
 		
 		try(Scanner sc = new Scanner(file)){
