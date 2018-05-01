@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
+import jdbm.helper.FastIterator;
 
 public class Searcher {
 	static RecordManager recman;
@@ -355,6 +358,24 @@ public class Searcher {
 		}
 	}
 	
+	public Vector<String> getAllStemmedWords(){
+		try {
+			Vector<String> result = new Vector<String>();
+			FastIterator iter = indexToDocPos.getFastIterator();
+			String key;	
+			while( (key = (String)iter.next())!=null)
+			{
+				Pattern pattern = Pattern.compile("[^a-z0-9]");
+				Matcher matcher = pattern.matcher(key);
+				if(!matcher.find())
+					result.add(key);
+			}
+			return result;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String string1 = "Professor abcdefghijk Chan Fintech President";
@@ -373,6 +394,7 @@ public class Searcher {
 		
 		// System.out.println(se.whereIsStopWord());
 		se.getAllParentLink();
+		System.out.println(se.getAllStemmedWords());
 	}
 
 }
