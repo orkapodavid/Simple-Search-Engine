@@ -14,12 +14,14 @@ if(request.getParameter("keywords")!=null)
 	String allString = request.getParameter("keywords");
 	char spaceChar = ' ';
 	char quoteChar = '\"';
+	char plusChar = '+';
 	Vector<String> wordVec = new Vector<String>();
 	int i = 0, startIndex = 0;
 	boolean quoteFound = false;
+	boolean plusFound = false;
 	for (; i < allString.length(); i++){
 	    char c = allString.charAt(i);   
-	    if(c == spaceChar && !quoteFound){
+	    if(c == spaceChar && !quoteFound && !plusFound){
 	    	// save the current String
 	    	if(i > startIndex){ // safety check
 	    		wordVec.add(new String(allString.substring(startIndex, i)));
